@@ -10,6 +10,11 @@ def dashboard():
     <head>
         <meta charset="UTF-8">
         <title>Dashboard Tickets | Sodexo Perú</title>
+
+        <!-- Chart.js -->
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+
         <style>
             body {
                 margin: 0;
@@ -18,14 +23,12 @@ def dashboard():
                 color: #ffffff;
             }
 
-            /* ===== HEADER ===== */
             header {
                 background: #081522;
                 padding: 16px 40px;
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
-                box-shadow: 0 2px 8px rgba(0,0,0,0.4);
             }
 
             .menu a {
@@ -35,24 +38,17 @@ def dashboard():
                 font-weight: 500;
             }
 
-            .menu a:hover {
-                color: #4da3ff;
-            }
-
             .brand {
                 font-weight: bold;
-                letter-spacing: 1px;
                 color: #4da3ff;
             }
 
-            /* ===== MAIN ===== */
             main {
                 padding: 40px;
             }
 
             h1 {
                 margin-bottom: 10px;
-                font-size: 28px;
             }
 
             .subtitle {
@@ -60,44 +56,41 @@ def dashboard():
                 margin-bottom: 40px;
             }
 
-            /* ===== KPI CARDS ===== */
-            .container {
+            .kpis {
                 display: grid;
                 grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
                 gap: 25px;
+                margin-bottom: 50px;
             }
 
             .card {
                 background: linear-gradient(135deg, #102a43, #243b53);
                 padding: 25px;
                 border-radius: 14px;
-                box-shadow: 0 6px 18px rgba(0,0,0,0.35);
                 text-align: center;
-                transition: transform 0.2s ease;
-            }
-
-            .card:hover {
-                transform: translateY(-5px);
             }
 
             .card h2 {
-                font-size: 38px;
+                font-size: 36px;
                 margin: 0;
             }
 
             .card p {
-                margin-top: 8px;
                 color: #cbd5e1;
-                font-size: 15px;
-                letter-spacing: 0.5px;
             }
 
-            .kpi-total h2 { color: #4da3ff; }
-            .kpi-ok h2 { color: #2ecc71; }
-            .kpi-alert h2 { color: #f1c40f; }
-            .kpi-pending h2 { color: #e74c3c; }
+            .charts {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+                gap: 40px;
+            }
 
-            /* ===== FOOTER ===== */
+            canvas {
+                background: #102a43;
+                padding: 20px;
+                border-radius: 14px;
+            }
+
             footer {
                 margin-top: 60px;
                 padding: 20px;
@@ -111,7 +104,6 @@ def dashboard():
 
     <body>
 
-        <!-- HEADER -->
         <header>
             <div class="menu">
                 <a href="#">Inicio</a>
@@ -121,40 +113,89 @@ def dashboard():
             <div class="brand">SODEXO PERÚ</div>
         </header>
 
-        <!-- MAIN CONTENT -->
         <main>
             <h1>📊 Dashboard de Atención de Tickets</h1>
             <div class="subtitle">
-                Seguimiento operativo – datos simulados (prueba de concepto)
+                Seguimiento operativo – datos simulados
             </div>
 
-            <div class="container">
-                <div class="card kpi-total">
-                    <h2>150</h2>
-                    <p>Total de Tickets</p>
-                </div>
+            <!-- KPIs -->
+            <div class="kpis">
+                <div class="card"><h2 style="color:#4da3ff">150</h2><p>Total Tickets</p></div>
+                <div class="card"><h2 style="color:#2ecc71">98</h2><p>A Tiempo</p></div>
+                <div class="card"><h2 style="color:#f1c40f">32</h2><p>Fuera de Tiempo</p></div>
+                <div class="card"><h2 style="color:#e74c3c">20</h2><p>Pendientes</p></div>
+            </div>
 
-                <div class="card kpi-ok">
-                    <h2>98</h2>
-                    <p>Atendidos a Tiempo</p>
-                </div>
-
-                <div class="card kpi-alert">
-                    <h2>32</h2>
-                    <p>Fuera de Tiempo</p>
-                </div>
-
-                <div class="card kpi-pending">
-                    <h2>20</h2>
-                    <p>Pendientes</p>
-                </div>
+            <!-- Charts -->
+            <div class="charts">
+                <canvas id="barChart"></canvas>
+                <canvas id="pieChart"></canvas>
             </div>
         </main>
 
-        <!-- FOOTER -->
         <footer>
             Dashboard de Control • Sodexo Perú • Uso interno
         </footer>
+
+        <script>
+            Chart.register(ChartDataLabels);
+
+            // Gráfico de barras - Distritos
+            new Chart(document.getElementById('barChart'), {
+                type: 'bar',
+                data: {
+                    labels: ['San Isidro', 'Miraflores', 'Surco', 'Callao', 'Arequipa'],
+                    datasets: [{
+                        label: 'Tickets por Distrito',
+                        data: [40, 32, 28, 20, 30],
+                        backgroundColor: '#4da3ff'
+                    }]
+                },
+                options: {
+                    plugins: {
+                        datalabels: {
+                            color: '#fff',
+                            anchor: 'end',
+                            align: 'top'
+                        },
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: { color: '#cbd5e1' }
+                        },
+                        x: {
+                            ticks: { color: '#cbd5e1' }
+                        }
+                    }
+                }
+            });
+
+            // Gráfico pastel - Lima vs Provincia
+            new Chart(document.getElementById('pieChart'), {
+                type: 'pie',
+                data: {
+                    labels: ['Lima', 'Provincia'],
+                    datasets: [{
+                        data: [110, 40],
+                        backgroundColor: ['#2ecc71', '#f39c12']
+                    }]
+                },
+                options: {
+                    plugins: {
+                        datalabels: {
+                            color: '#fff',
+                            formatter: (value, ctx) => {
+                                let total = ctx.chart.data.datasets[0].data.reduce((a,b)=>a+b,0);
+                                return Math.round((value / total) * 100) + '%';
+                            }
+                        }
+                    }
+                }
+            });
+        </script>
 
     </body>
     </html>
