@@ -8,6 +8,14 @@ import io
 import os
 import math
 
+# =========================
+# LOGIN CONFIG
+# =========================
+USUARIO_VALIDO = "ABEDOYA"
+PASSWORD_VALIDA = "Prueba123"
+
+if "logged_in" not in st.session_state:
+    st.session_state.logged_in = False
 
 
 
@@ -126,6 +134,36 @@ st.markdown("""
     
     </style>
 """, unsafe_allow_html=True)
+
+
+def login_page():
+    st.markdown("<h1 style='text-align:center'>SODE<span style='color:red'>X</span>O PERÚ</h1>", unsafe_allow_html=True)
+    st.markdown("<h3 style='text-align:center'>Acceso Rutograma</h3>", unsafe_allow_html=True)
+
+    with st.form("login_form"):
+        usuario = st.text_input("Usuario")
+        password = st.text_input("Contraseña", type="password")
+        ingresar = st.form_submit_button("Ingresar")
+
+        if ingresar:
+            if usuario == USUARIO_VALIDO and password == PASSWORD_VALIDA:
+                st.session_state.logged_in = True
+                st.rerun()
+            else:
+                st.error("Usuario o contraseña incorrectos")
+
+
+# =========================
+# LOGIN CHECK
+# =========================
+if not st.session_state.logged_in:
+    login_page()
+    st.stop()
+
+
+
+
+
 
 # --- SESSION STATE INITIALIZATION ---
 if 'stage' not in st.session_state:
@@ -570,4 +608,5 @@ elif st.session_state.stage == 'results':
     if c_reset.button("🔄 Nueva Planificación"):
         reset_app()
         st.rerun()
+
 
