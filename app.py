@@ -22,95 +22,40 @@ PASSWORD_VALIDA = "Prueba123"
 if "logged_in" not in st.session_state:
     st.session_state.logged_in = False
 
-
 def login_page():
-    # CSS SOLO PARA LOGIN (no mezclar con el CSS grande de la app)
-    st.markdown(
-        """
-        <style>
-        /* Fondo */
-        .login-bg {
-            min-height: 100vh;
-            background: linear-gradient(180deg,#071a2f,#0b2a4a);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 24px;
-        }
+    st.markdown("<br><br><br>", unsafe_allow_html=True)
 
-        /* Tarjeta */
-        .login-card {
+    col1, col2, col3 = st.columns([1, 1.2, 1])
+
+    with col2:
+        st.markdown("""
+        <div style="
             background:#081c34;
-            padding:35px;
+            padding:40px;
             border-radius:16px;
-            width:360px;
             text-align:center;
-            box-shadow:0 20px 40px rgba(0,0,0,.4);
-        }
+            box-shadow:0 20px 40px rgba(0,0,0,.35);
+        ">
+            <h1 style="color:white;margin-bottom:5px">
+                SODE<span style="color:#EF4044">X</span>O PERÚ
+            </h1>
+            <p style="color:#c7d3e3;margin-top:0">
+                Acceso Rutograma
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
 
-        /* Título */
-        .login-title {
-            margin:0;
-            color:white !important;
-            letter-spacing:1px;
-            font-size: 28px;
-            font-weight: 700;
-            font-family: Arial, sans-serif;
-        }
-        .login-x { color:#EF4044; }
+        with st.form("login_form"):
+            usuario = st.text_input("Usuario")
+            password = st.text_input("Contraseña", type="password")
+            ingresar = st.form_submit_button("Ingresar")
 
-        /* Subtítulo */
-        .login-subtitle {
-            margin-top:10px;
-            color:#9fbad6 !important;
-            font-weight:normal;
-            font-family: Arial, sans-serif;
-        }
-
-        /* Forzar el texto del botón del form a blanco */
-        div[data-testid="stFormSubmitButton"] button {
-            width: 100% !important;
-            background: #4da3ff !important;
-            color: white !important;
-            border: none !important;
-            border-radius: 8px !important;
-            font-size: 15px !important;
-            padding: 12px !important;
-            cursor: pointer !important;
-        }
-
-        /* Inputs dentro del login un poco más “web” */
-        .stTextInput input {
-            width: 100% !important;
-            padding: 12px !important;
-            border-radius: 8px !important;
-            border: none !important;
-        }
-        </style>
-        """,
-        unsafe_allow_html=True,
-    )
-
-    st.markdown('<div class="login-bg"><div class="login-card">', unsafe_allow_html=True)
-    st.markdown(
-        '<div class="login-title">SODE<span class="login-x">X</span>O PERÚ</div>',
-        unsafe_allow_html=True,
-    )
-    st.markdown('<div class="login-subtitle">Acceso Rutograma</div>', unsafe_allow_html=True)
-
-    with st.form("login_form"):
-        usuario = st.text_input("Usuario")
-        password = st.text_input("Contraseña", type="password")
-        ingresar = st.form_submit_button("Ingresar")
-
-        if ingresar:
-            if usuario == USUARIO_VALIDO and password == PASSWORD_VALIDA:
-                st.session_state.logged_in = True
-                st.rerun()
-            else:
-                st.error("Usuario o contraseña incorrectos")
-
-    st.markdown("</div></div>", unsafe_allow_html=True)
+            if ingresar:
+                if usuario == USUARIO_VALIDO and password == PASSWORD_VALIDA:
+                    st.session_state.logged_in = True
+                    st.rerun()
+                else:
+                    st.error("Usuario o contraseña incorrectos")
 
 
 # =========================
@@ -684,5 +629,6 @@ elif st.session_state.stage == "results":
     if c_reset.button("🔄 Nueva Planificación"):
         reset_app()
         st.rerun()
+
 
 
