@@ -189,7 +189,22 @@ def principal():
       </div>
 
       <div class="card" style="height:450px">
-        <select onchange="location='?tecnico='+this.value" style="width:100%;margin-bottom:10px">
+        <select onchange="location='?tecnico='+this.value"
+        style="
+          width:100%;
+          height:42px;
+          font-size:16px;
+          padding:6px 10px;
+          border-radius:8px;
+          margin-bottom:12px;
+        ">
+
+
+
+
+
+
+        
           {''.join([f"<option {'selected' if t==tecnico else ''}>{t}</option>" for t in RUTAS])}
         </select>
         <iframe src="{mapa}" style="width:100%;height:100%;border:0;border-radius:10px"></iframe>
@@ -263,6 +278,7 @@ def logout():
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=10000)
+
 
 
 
