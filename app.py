@@ -82,12 +82,13 @@ def login():
 # MAPAS
 # =========================
 RUTAS = {
-    "Juan": "https://www.google.com/maps?q=San+Isidro+Lima&output=embed",
-    "Pedro": "https://www.google.com/maps?q=Surco+Lima&output=embed",
-    "Luis": "https://www.google.com/maps?q=Callao+Lima&output=embed",
-    "Carlos": "https://www.google.com/maps?q=San+Borja+Lima&output=embed",
-    "Miguel": "https://www.google.com/maps?q=Magdalena+Lima&output=embed",
+    "Juan": "https://www.google.com/maps/dir/San+Isidro+Lima/Miraflores+Lima?output=embed",
+    "Pedro": "https://www.google.com/maps/dir/Santiago+de+Surco/Lima?output=embed",
+    "Luis": "https://www.google.com/maps/dir/Callao/San+Miguel+Lima?output=embed",
+    "Carlos": "https://www.google.com/maps/dir/San+Borja/La+Molina?output=embed",
+    "Miguel": "https://www.google.com/maps/dir/Magdalena+del+Mar/Jesus+Maria+Lima?output=embed",
 }
+
 
 # =========================
 # LAYOUT BASE
@@ -262,4 +263,5 @@ def logout():
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=10000)
+
 
