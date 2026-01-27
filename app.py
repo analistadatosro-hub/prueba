@@ -164,7 +164,7 @@ def principal():
         <canvas id="barras" style="height:100%"></canvas>
       </div>
 
-      <div class="card" style="height:260px">
+      <div class="card" style="height:450px">
         <select onchange="location='?tecnico='+this.value" style="width:100%;margin-bottom:10px">
           {''.join([f"<option {'selected' if t==tecnico else ''}>{t}</option>" for t in RUTAS])}
         </select>
@@ -225,4 +225,5 @@ def logout():
 # =========================
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=10000)
+
 
