@@ -68,147 +68,143 @@ if not st.session_state.logged_in:
 # =========================
 # CUSTOM CSS (SODEXO BRANDING) - SOLO DESPUÉS DEL LOGIN
 # =========================
-st.markdown(
-    """
-    <style>
-    /* Main Background */
-    .stApp {
-        background-color: #F4F6F8;
-    }
 
-    /* Headers - Sodexo Navy */
-    h1, h2, h3, h4, h5, h6 {
-        color: #262262 !important;
-        font-family: 'Segoe UI', sans-serif;
-    }
-
-    /* Buttons - Sodexo Red */
-    .stButton button {
-        background-color: #EF4044 !important;
-        color: white !important;
-        border-radius: 8px !important;
-        border: none !important;
-        font-weight: 600 !important;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
-        transition: all 0.3s ease !important;
-    }
-    .stButton button:hover {
-        background-color: #D12F33 !important;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 6px rgba(0,0,0,0.2) !important;
-    }
-
-    /* Metrics Styles */
-    div[data-testid="stMetricValue"] {
-        color: #EF4044 !important;
-        font-weight: bold;
-    }
-    div[data-testid="stMetricLabel"] {
-        color: #5D5D5D !important;
-    }
-
-    /* Cards/Containers */
-    div[data-testid="stExpander"] {
-        border-color: #E0E0E0 !important;
-        border-radius: 8px !important;
-        background-color: white !important;
-    }
-
-    /* Tables */
-    thead tr th:first-child {display:none}
-    tbody th {display:none}
-
-    /* INPUTS & MENUS - Gray Background, Blue Text */
-    .stTextInput input, .stNumberInput input, .stSelectbox div[data-baseweb="select"] > div, .stTextArea textarea {
-        background-color: #E0E4E8 !important;
-        color: #262262 !important;
-        border-radius: 5px;
-        border: 1px solid #B0B0B0 !important;
-    }
-
-    /* Dropdown Menu Container */
-    div[data-baseweb="popover"], div[data-baseweb="popover"] > div, ul[data-baseweb="menu"] {
-        background-color: #E0E4E8 !important;
-    }
-
-    /* Dropdown Options Text */
-    li[data-baseweb="option"] span, li[data-baseweb="option"] div, .stSelectbox [data-baseweb="menu"] li {
-        color: #262262 !important;
-    }
-
-    /* Selected Option Background (Hover) */
-    li[data-baseweb="option"]:hover, li[data-baseweb="option"][aria-selected="true"] {
-        background-color: #CCD3D9 !important;
-    }
-
-    /* Selected Text in Input Box */
-    div[data-baseweb="select"] span {
-        color: #262262 !important;
-    }
-
-    /* Remove white/dark default backgrounds on the list container */
-    .stSelectbox ul {
-        background-color: #E0E4E8 !important;
-    }
-
-    /* HEADERS - FORCE BLUE */
-    h1, h2, h3, h4, h5, h6,
-    .stHeadingContainer h1, .stHeadingContainer h2, .stHeadingContainer h3,
-    div[data-testid="stMarkdownContainer"] h1, div[data-testid="stMarkdownContainer"] h2, div[data-testid="stMarkdownContainer"] h3,
-    div[data-testid="stMarkdownContainer"] p,
-    .stMarkdown label p {
-        color: #262262 !important;
-        font-family: 'Segoe UI', sans-serif;
-    }
-
-    /* Ensure widgets label texts are also blue */
-    .stSelectbox label, .stTextInput label, .stNumberInput label {
-        color: #262262 !important;
-    }
-
-    /* Metric Labels */
-    div[data-testid="stMetricLabel"] {
-        color: #262262 !important;
-    }
-
-    /* DATAFRAMES / TABLES - Force Gray Background */
-    [data-testid="stDataFrame"], [data-testid="stTable"] {
-        background-color: #E0E4E8 !important;
-    }
-    </style>
-""",
-    unsafe_allow_html=True,
-)
-
-
+# =========================
+# CUSTOM CSS (SODEXO BRANDING) - SOLO DESPUÉS DEL LOGIN
+# =========================
 st.markdown("""
 <style>
 
-/* 🔥 QUITAR ESPACIO SUPERIOR GLOBAL */
+/* =========================
+   FONDO GENERAL
+========================= */
+.stApp {
+    background-color: #F4F6F8;
+}
+
+/* =========================
+   QUITAR ESPACIO SUPERIOR EXCESIVO
+========================= */
 .main .block-container {
     padding-top: 0.5rem !important;
     padding-bottom: 1rem !important;
+    max-width: 100% !important;
 }
 
-/* 🔥 PEGAR LOGO Y TITULO ARRIBA */
-h1, h2, h3 {
+/* =========================
+   OCULTAR ELEMENTOS STREAMLIT
+========================= */
+#MainMenu {
+    visibility: hidden;
+}
+header, footer {
+    visibility: hidden;
+}
+
+/* =========================
+   LOGO Y TITULOS COMPACTOS
+========================= */
+img {
+    margin-bottom: 0.4rem !important;
+}
+
+h1, h2, h3, h4, h5, h6 {
     margin-top: 0 !important;
     padding-top: 0 !important;
+    color: #262262 !important;
+    font-family: 'Segoe UI', sans-serif;
 }
 
-/* 🔥 REDUCIR ESPACIO DESPUÉS DEL LOGO */
-img {
-    margin-bottom: 0.5rem !important;
+/* =========================
+   BOTONES (SODEXO ROJO)
+========================= */
+.stButton button {
+    background-color: #EF4044 !important;
+    color: white !important;
+    border-radius: 8px !important;
+    border: none !important;
+    font-weight: 600 !important;
+    padding: 0.6rem 1.2rem !important;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.15) !important;
+    transition: all 0.2s ease !important;
 }
 
-/* 🔥 QUITAR ESPACIO EXTRA DE STREAMLIT */
-section[data-testid="stSidebar"] + div {
-    padding-top: 0 !important;
+.stButton button:hover {
+    background-color: #D12F33 !important;
+    transform: translateY(-1px);
+}
+
+/* =========================
+   INPUTS / SELECTS
+========================= */
+.stTextInput input,
+.stNumberInput input,
+.stTextArea textarea,
+.stSelectbox div[data-baseweb="select"] > div {
+    background-color: #E0E4E8 !important;
+    color: #262262 !important;
+    border-radius: 6px !important;
+    border: 1px solid #B0B0B0 !important;
+}
+
+/* Labels */
+.stTextInput label,
+.stNumberInput label,
+.stSelectbox label {
+    color: #262262 !important;
+    font-weight: 500;
+}
+
+/* =========================
+   DROPDOWNS
+========================= */
+ul[data-baseweb="menu"] {
+    background-color: #E0E4E8 !important;
+}
+
+li[data-baseweb="option"] {
+    color: #262262 !important;
+}
+
+li[data-baseweb="option"]:hover,
+li[data-baseweb="option"][aria-selected="true"] {
+    background-color: #CCD3D9 !important;
+}
+
+/* =========================
+   MÉTRICAS
+========================= */
+div[data-testid="stMetricValue"] {
+    color: #EF4044 !important;
+    font-weight: bold;
+}
+
+div[data-testid="stMetricLabel"] {
+    color: #262262 !important;
+}
+
+/* =========================
+   TABLAS
+========================= */
+[data-testid="stDataFrame"],
+[data-testid="stTable"] {
+    background-color: #E0E4E8 !important;
+}
+
+thead tr th:first-child { display: none; }
+tbody th { display: none; }
+
+/* =========================
+   EXPANDERS / CARDS
+========================= */
+div[data-testid="stExpander"] {
+    background-color: white !important;
+    border-radius: 10px !important;
+    border: 1px solid #E0E0E0 !important;
 }
 
 </style>
 """, unsafe_allow_html=True)
-
 
 
 
@@ -274,10 +270,6 @@ st.markdown(
     "<p style='text-align: center; color: #5D5D5D; font-weight: bold;'>Gestión Inteligente de Flota y Entregas - Sodexo Perú</p>",
     unsafe_allow_html=True,
 )
-
-if st.button("🔄 Reiniciar Aplicación"):
-    reset_app()
-    st.rerun()
 
 
 # =========================
@@ -661,6 +653,7 @@ elif st.session_state.stage == "results":
     if c_reset.button("🔄 Nueva Planificación"):
         reset_app()
         st.rerun()
+
 
 
 
