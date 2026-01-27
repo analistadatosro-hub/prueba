@@ -135,45 +135,68 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
+st.markdown("""
+<style>
+/* Quitar márgenes de Streamlit */
+.main .block-container {
+    padding: 0 !important;
+    max-width: 100% !important;
+}
+
+/* Ocultar header y footer de Streamlit */
+header, footer {
+    visibility: hidden;
+}
+</style>
+""", unsafe_allow_html=True)
+
+
+
 def login_page():
     st.markdown("""
-        <style>
-        .login-bg {
-            min-height: 100vh;
-            background: linear-gradient(180deg, #071a2f, #0b2a4a);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+    <style>
+    body {
+        background: linear-gradient(180deg, #071a2f, #0b2a4a);
+    }
 
-        .login-card {
-            background: #081c34;
-            padding: 40px;
-            border-radius: 16px;
-            width: 360px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-            text-align: center;
-        }
+    .login-wrapper {
+        position: fixed;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(180deg, #071a2f, #0b2a4a);
+        z-index: 9999;
+    }
 
-        .login-card h1 {
-            color: white;
-            margin-bottom: 5px;
-            letter-spacing: 1px;
-        }
+    .login-card {
+        background: #081c34;
+        padding: 40px;
+        border-radius: 16px;
+        width: 360px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        text-align: center;
+    }
 
-        .login-card h1 span {
-            color: #EF4044;
-        }
+    .login-card h1 {
+        color: white;
+        margin-bottom: 6px;
+        letter-spacing: 1px;
+    }
 
-        .login-card h3 {
-            color: #9fbad6;
-            font-weight: normal;
-            margin-bottom: 25px;
-        }
-        </style>
+    .login-card h1 span {
+        color: #EF4044;
+    }
+
+    .login-card h3 {
+        color: #9fbad6;
+        font-weight: normal;
+        margin-bottom: 25px;
+    }
+    </style>
     """, unsafe_allow_html=True)
 
-    st.markdown('<div class="login-bg"><div class="login-card">', unsafe_allow_html=True)
+    st.markdown('<div class="login-wrapper"><div class="login-card">', unsafe_allow_html=True)
 
     st.markdown("<h1>SODE<span>X</span>O PERÚ</h1>", unsafe_allow_html=True)
     st.markdown("<h3>Acceso Rutograma</h3>", unsafe_allow_html=True)
@@ -191,6 +214,11 @@ def login_page():
                 st.error("Usuario o contraseña incorrectos")
 
     st.markdown('</div></div>', unsafe_allow_html=True)
+
+
+
+
+
 
 
 
@@ -650,6 +678,7 @@ elif st.session_state.stage == 'results':
     if c_reset.button("🔄 Nueva Planificación"):
         reset_app()
         st.rerun()
+
 
 
 
