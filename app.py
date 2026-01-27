@@ -182,7 +182,7 @@ def principal():
     </div>
 
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
-      <div class="card" style="height:450px">
+      <div class="card" style="height:550px">
         <h3 style="margin-top:0">Tickets por oficina</h3>
         <canvas id="barras" style="height:100%"></canvas>
       </div>
@@ -262,3 +262,4 @@ def logout():
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=10000)
+
