@@ -52,7 +52,7 @@ def login():
     """
 
 
-# ================ LAYOUT BASE =================
+# ================= LAYOUT BASE =================
 def layout(titulo, contenido, extra_js=""):
     return f"""
 <!DOCTYPE html>
@@ -60,8 +60,6 @@ def layout(titulo, contenido, extra_js=""):
 <head>
     <title>{titulo}</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
     <style>
         body {{
@@ -102,7 +100,9 @@ def layout(titulo, contenido, extra_js=""):
             gap:30px;
             margin-top:30px;
         }}
-        #map {{ height:300px; border-radius:10px; }}
+        iframe {{
+            border-radius:10px;
+        }}
     </style>
 </head>
 
@@ -146,13 +146,15 @@ def principal():
     </div>
 
     <div class="row">
+        <!-- GRAFICO -->
         <div class="card">
             <h3>Tickets por Oficina</h3>
             <canvas id="barChart"></canvas>
         </div>
 
+        <!-- MAPA GOOGLE -->
         <div class="card">
-            <h3>Rutas por Técnico</h3>
+            <h3>Ruta por Técnico</h3>
             <select onchange="cambiarRuta(this.value)">
                 <option value="1">Técnico Juan</option>
                 <option value="2">Técnico Carlos</option>
@@ -160,113 +162,79 @@ def principal():
                 <option value="4">Técnico Luis</option>
                 <option value="5">Técnico Pedro</option>
             </select>
-            <div id="map"></div>
+
+            <iframe
+                id="mapa"
+                width="100%"
+                height="300"
+                src=""
+                loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade">
+            </iframe>
         </div>
     </div>
     """
 
     extra_js = """
     <script>
+        // Gráfico de barras
         new Chart(document.getElementById('barChart'), {
             type:'bar',
             data:{
                 labels:['San Isidro','Surco','Miraflores','Callao','Chorrillos'],
-                datasets:[{ data:[12,9,7,8,6], backgroundColor:'#4da6ff' }]
+                datasets:[{
+                    data:[12,9,7,8,6],
+                    backgroundColor:'#4da6ff'
+                }]
             },
             options:{ plugins:{legend:{display:false}} }
         });
 
-        var map = L.map('map').setView([-12.0464,-77.0428],14);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-
-        var rutas = {
-            1:[[-12.045,-77.04],[-12.047,-77.035]],
-            2:[[-12.05,-77.045],[-12.052,-77.05]],
-            3:[[-12.04,-77.03],[-12.042,-77.028]],
-            4:[[-12.048,-77.06],[-12.049,-77.065]],
-            5:[[-12.043,-77.05],[-12.041,-77.048]]
+        // RUTAS GOOGLE MAPS (UNA POR TECNICO)
+        const rutas = {
+            1: "https://www.google.com/maps/dir/?api=1&waypoints=-12.088906,-77.004256&destination=-12.091313,-77.030346&travelmode=driving",
+            2: "https://www.google.com/maps/dir/?api=1&waypoints=-12.060000,-77.045000&destination=-12.070000,-77.060000&travelmode=driving",
+            3: "https://www.google.com/maps/dir/?api=1&waypoints=-12.050000,-77.030000&destination=-12.040000,-77.020000&travelmode=driving",
+            4: "https://www.google.com/maps/dir/?api=1&waypoints=-12.080000,-77.070000&destination=-12.090000,-77.080000&travelmode=driving",
+            5: "https://www.google.com/maps/dir/?api=1&waypoints=-12.100000,-77.040000&destination=-12.110000,-77.050000&travelmode=driving"
         };
 
-        var linea = L.polyline(rutas[1],{color:'red'}).addTo(map);
         function cambiarRuta(v){
-            map.removeLayer(linea);
-            linea = L.polyline(rutas[v],{color:'red'}).addTo(map);
-            map.fitBounds(linea.getBounds());
+            document.getElementById("mapa").src = rutas[v];
         }
+
+        // Ruta inicial
+        cambiarRuta(1);
     </script>
     """
 
     return layout("Principal – Rutograma", contenido, extra_js)
 
 
-# ================= TÉCNICOS =================
+# ================= OTRAS PÁGINAS (NO TOCADAS) =================
 @app.route("/tecnicos")
 def tecnicos():
     if not session.get("logueado"):
         return redirect(url_for("login"))
+    return layout("Técnicos", "<div class='card'>Vista de técnicos</div>")
 
-    contenido = """
-    <div class="grid">
-        <div class="card">👷 Juan<br><small>Zona Centro</small></div>
-        <div class="card">👷 Carlos<br><small>Zona Norte</small></div>
-        <div class="card">👷 Ana<br><small>Zona Sur</small></div>
-        <div class="card">👷 Luis<br><small>Callao</small></div>
-        <div class="card">👷 Pedro<br><small>Soporte</small></div>
-    </div>
-    """
-    return layout("Técnicos", contenido)
-
-
-# ================= CLIENTES =================
-@app.route("/clientes")
-def clientes():
-    if not session.get("logueado"):
-        return redirect(url_for("login"))
-
-    contenido = """
-    <div class="grid">
-        <div class="card">🏦 BCP</div>
-        <div class="card">🏦 BBVA</div>
-        <div class="card">🏦 Scotiabank</div>
-        <div class="card">🏦 Interbank</div>
-        <div class="card">🏦 Banco de la Nación</div>
-    </div>
-    """
-    return layout("Clientes", contenido)
-
-
-# ================= ESPECIALIDAD =================
 @app.route("/especialidad")
 def especialidad():
     if not session.get("logueado"):
         return redirect(url_for("login"))
+    return layout("Especialidad", "<div class='card'>Vista de especialidades</div>")
 
-    contenido = """
-    <div class="grid">
-        <div class="card">⚡ Electricidad – 40%</div>
-        <div class="card">❄️ Climatización – 25%</div>
-        <div class="card">🔥 Gas – 20%</div>
-        <div class="card">🔧 Otros – 15%</div>
-    </div>
-    """
-    return layout("Especialidad", contenido)
+@app.route("/clientes")
+def clientes():
+    if not session.get("logueado"):
+        return redirect(url_for("login"))
+    return layout("Clientes", "<div class='card'>Vista de clientes</div>")
 
-
-# ================= CONDICIONES =================
 @app.route("/condiciones")
 def condiciones():
     if not session.get("logueado"):
         return redirect(url_for("login"))
-
-    contenido = """
-    <div class="card">
-        <p>• SLA máximo de atención: 24 horas</p>
-        <p>• Prioridad alta en oficinas críticas</p>
-        <p>• Rutas sujetas a tráfico y disponibilidad</p>
-        <p>• Información de uso interno Sodexo</p>
-    </div>
-    """
-    return layout("Condiciones Operativas", contenido)
+    return layout("Condiciones", "<div class='card'>Condiciones operativas</div>")
 
 
 @app.route("/logout")
@@ -277,3 +245,5 @@ def logout():
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=10000)
+
+
