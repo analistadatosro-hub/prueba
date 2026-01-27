@@ -8,6 +8,12 @@ import io
 import os
 import math
 
+
+
+
+
+
+
 st.set_page_config(page_title="Gestión de Rutas - Sodexo", layout="wide", page_icon="🚛")
 
 # --- CUSTOM CSS (SODEXO BRANDING) ---
@@ -131,8 +137,6 @@ if 'master_db' not in st.session_state:
 if 'optimization_result' not in st.session_state:
     st.session_state.optimization_result = None
 
-# --- CONSTANTS ---
-MASTER_FILE_PATH = r"../../Descargas/VRP_Spreadsheet_Solver_v3.8 14.05.xlsm"
 
 import shutil
 
@@ -201,21 +205,38 @@ if st.button("🔄 Reiniciar Aplicación"):
     reset_app()
     st.rerun()
 
-# --- LOAD DATABASE (ONCE) ---
+# --- LOAD DATABASE (ONLY VIA UPLOAD) ---
 if st.session_state.master_db is None:
-    df_db = load_master_db(MASTER_FILE_PATH)
-    if df_db is not None:
+    uploaded = st.file_uploader(
+        "📂 Sube el archivo maestro Excel (VRP_Spreadsheet_Solver_v3.8 14.05.xlsm)",
+        type=["xlsx", "xlsm"]
+    )
+
+    if uploaded is None:
+        st.info("⬆️ Por favor sube el archivo Excel para continuar.")
+        st.stop()
+
+    try:
+        df_db = pd.read_excel(uploaded, sheet_name='1 ubicaciones')
+        df_db.columns = df_db.columns.str.strip()
+
+        # Force numeric coordinates
+        for col in ['Latitud (y)', 'Longitud (x)']:
+            if col in df_db.columns:
+                df_db[col] = pd.to_numeric(df_db[col], errors='coerce')
+
         st.session_state.master_db = df_db
-        st.success("✅ Base de Datos de Oficinas cargada correctamente.")
-    else:
-        st.error(f"❌ No se encontró el archivo maestro en: {MASTER_FILE_PATH}")
-        uploaded = st.file_uploader("Por favor cargue el archivo 'VRP_Spreadsheet_Solver_v3.8 14.05.xlsm' manualmente:", type=["xlsx", "xlsm"])
-        if uploaded:
-            st.session_state.master_db = pd.read_excel(uploaded, sheet_name='1 ubicaciones')
-            st.session_state.master_db.columns = st.session_state.master_db.columns.str.strip()
-            st.rerun()
-        else:
-            st.stop()
+        st.success("✅ Base de Datos cargada correctamente.")
+
+        st.rerun()
+
+    except Exception as e:
+        st.error(f"❌ Error al leer el archivo Excel: {e}")
+        st.stop()
+
+
+
+
 
 # --- STAGE 1: INGRESO DE TICKETS ---
 if st.session_state.stage == 'input_tickets':
@@ -549,3 +570,4 @@ elif st.session_state.stage == 'results':
     if c_reset.button("🔄 Nueva Planificación"):
         reset_app()
         st.rerun()
+
