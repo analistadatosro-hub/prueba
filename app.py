@@ -226,13 +226,15 @@ def reset_app():
 # =========================
 # APP HEADER
 # =========================
-if os.path.exists("logo.png"):
-    st.image("logo.png", width=300)
+# APP HEADER - LOGO
+if os.path.exists("logo.jpeg"):
+    st.image("logo.jpeg", width=300)
 else:
     st.markdown(
-        "<h1 style='color: #262262; font-size: 40px; margin:0; padding:0;'>SODEXO</h1>",
-        unsafe_allow_html=True,
+        "<h1 style='color: #262262; font-size: 40px; margin:0; padding:0;'>SODEXO PERÚ</h1>",
+        unsafe_allow_html=True
     )
+
 
 st.markdown(
     "<h1 style='text-align: center; color: #262262; padding-top: 10px;'>Planificador de Rutas</h1>",
@@ -629,6 +631,7 @@ elif st.session_state.stage == "results":
     if c_reset.button("🔄 Nueva Planificación"):
         reset_app()
         st.rerun()
+
 
 
 
