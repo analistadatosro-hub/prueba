@@ -1,249 +1,138 @@
 from flask import Flask, request, redirect, url_for, session
 
 app = Flask(__name__)
-app.secret_key = "sodexo_secreto_prueba"
+app.secret_key = "sodexo_secret_key"
 
+# =========================
+# CREDENCIALES (PRUEBA)
+# =========================
 USUARIO_VALIDO = "ABEDOYA"
-PASSWORD_VALIDA = "Prueba123"
+PASSWORD_VALIDO = "Prueba123"
 
+# =========================
+# RUTAS GOOGLE MAPS (EMBED)
+# =========================
+RUTAS_TECNICOS = {
+    "Juan": "https://www.google.com/maps/embed?pb=!1m28!1m12!1m3!1d3901.8764063242456!2d-77.010256!3d-12.088906!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m13!3e0!4m5!1s0x9105c87bda9e6db7%3A0x8c7b8c7e6a4d4f32!2sSan%20Isidro%2C%20Lima!3m2!1d-12.097955!2d-77.037018!4m5!1s0x9105c84ff2d0fbe9%3A0x5d2a6a5e2f5c41fa!2sMiraflores%2C%20Lima!3m2!1d-12.1215!2d-77.0297!5e0!3m2!1ses!2spe!4v1700000000001",
+    "Pedro": "https://www.google.com/maps/embed?pb=!1m28!1m12!1m3!1d3901.8764063242456!2d-77.030346!3d-12.091313!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m13!3e0!4m5!1sSurco%2C%20Lima!3m2!1d-12.1337!2d-77.0211!4m5!1sChorrillos%2C%20Lima!3m2!1d-12.1702!2d-77.0243!5e0!3m2!1ses!2spe!4v1700000000002",
+    "Luis": "https://www.google.com/maps/embed?pb=!1m28!1m12!1m3!1d3901.8764063242456!2d-77.042!3d-12.055!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m13!3e0!4m5!1sCallao!3m2!1d-12.0621!2d-77.1335!4m5!1sLa%20Punta!3m2!1d-12.0741!2d-77.1654!5e0!3m2!1ses!2spe!4v1700000000003",
+    "Carlos": "https://www.google.com/maps/embed?pb=!1m28!1m12!1m3!1d3901.8764063242456!2d-77.012!3d-12.099!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m13!3e0!4m5!1sSan%20Borja!3m2!1d-12.107!2d-77.001!4m5!1sLa%20Victoria!3m2!1d-12.066!2d-77.033!5e0!3m2!1ses!2spe!4v1700000000004",
+    "Miguel": "https://www.google.com/maps/embed?pb=!1m28!1m12!1m3!1d3901.8764063242456!2d-77.060!3d-12.090!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m13!3e0!4m5!1sMagdalena!3m2!1d-12.089!2d-77.070!4m5!1sPueblo%20Libre!3m2!1d-12.078!2d-77.062!5e0!3m2!1ses!2spe!4v1700000000005",
+}
 
-# ================= LOGIN =================
+# =========================
+# LOGIN
+# =========================
 @app.route("/", methods=["GET", "POST"])
 def login():
-    error = ""
     if request.method == "POST":
-        if request.form.get("usuario") == USUARIO_VALIDO and request.form.get("password") == PASSWORD_VALIDA:
-            session["logueado"] = True
+        if (
+            request.form["usuario"] == USUARIO_VALIDO
+            and request.form["password"] == PASSWORD_VALIDO
+        ):
+            session["login"] = True
             return redirect(url_for("principal"))
-        else:
-            error = "Usuario o contraseña incorrectos"
+    return """
+    <html><body style="background:#081c34;color:white;font-family:Arial;text-align:center;padding-top:120px">
+    <h1>SODEXO <span style="color:red">X</span> PERÚ</h1>
+    <form method="post">
+      <input name="usuario" placeholder="Usuario"><br><br>
+      <input type="password" name="password" placeholder="Contraseña"><br><br>
+      <button>Ingresar</button>
+    </form>
+    </body></html>
+    """
+
+# =========================
+# PRINCIPAL - RUTOGRAMA
+# =========================
+@app.route("/principal")
+def principal():
+    if not session.get("login"):
+        return redirect(url_for("login"))
+
+    tecnico = request.args.get("tecnico", "Juan")
+    mapa = RUTAS_TECNICOS.get(tecnico)
 
     return f"""
     <html>
     <head>
-        <title>Login | Sodexo Perú</title>
-        <style>
-            body {{
-                height:100vh; display:flex; justify-content:center; align-items:center;
-                background:linear-gradient(180deg,#071a2d,#0b2a44);
-                font-family:Arial; color:white;
-            }}
-            .box {{
-                background:#061627; padding:40px; border-radius:14px;
-                width:320px; text-align:center;
-            }}
-            .x {{ color:#e74c3c; }}
-            input,button {{ width:100%; padding:12px; margin-top:15px; }}
-            button {{ background:#4da6ff; border:none; color:white; }}
-            .error {{ color:#ff7675; margin-top:10px; }}
-        </style>
+      <title>Rutograma - Sodexo Perú</title>
+      <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+      <style>
+        body {{ background:#071a2f;color:white;font-family:Arial;margin:0 }}
+        .top {{ padding:15px;background:#081c34 }}
+        .menu {{ display:flex;gap:20px;padding:10px 20px;background:#0b2a4a }}
+        .menu a {{ color:white;text-decoration:none }}
+        .cards {{ display:flex;gap:20px;padding:20px }}
+        .card {{ flex:1;padding:20px;border-radius:12px;text-align:center }}
+        .c1{{background:#1e3a5f}} .c2{{background:#244a4a}}
+        .c3{{background:#2c9c8c}} .c4{{background:#e67352}}
+        .grid {{ display:flex;gap:20px;padding:20px }}
+        iframe {{ border-radius:12px }}
+      </style>
     </head>
     <body>
-        <form method="POST" class="box">
-            <h1>SODE<span class="x">X</span>O PERÚ</h1>
-            <h3>Acceso Rutograma</h3>
-            <input name="usuario" placeholder="Usuario" required>
-            <input type="password" name="password" placeholder="Contraseña" required>
-            <button>Ingresar</button>
-            <div class="error">{error}</div>
-        </form>
+
+    <div class="top">
+      <b>SODEXO <span style="color:red">X</span> PERÚ</b>
+      <a href="/logout" style="float:right;color:red">Cerrar sesión</a>
+    </div>
+
+    <div class="menu">
+      <a href="/principal">Principal</a>
+      <a href="#">Técnicos</a>
+      <a href="#">Especialidad</a>
+      <a href="#">Clientes</a>
+      <a href="#">Condiciones</a>
+    </div>
+
+    <h2 style="padding:20px">Principal – Rutograma</h2>
+
+    <div class="cards">
+      <div class="card c1">🚚<h2>6</h2>Vehículos</div>
+      <div class="card c2">🧑‍🔧<h2>5</h2>Técnicos</div>
+      <div class="card c3">🏢<h2>5</h2>Oficinas</div>
+      <div class="card c4">🎫<h2>42</h2>Tickets</div>
+    </div>
+
+    <div class="grid">
+      <canvas id="bar" width="400"></canvas>
+
+      <div>
+        <select onchange="location='?tecnico='+this.value">
+          {''.join([f"<option {'selected' if t==tecnico else ''}>{t}</option>" for t in RUTAS_TECNICOS])}
+        </select><br><br>
+
+        <iframe src="{mapa}" width="500" height="350"></iframe>
+      </div>
+    </div>
+
+    <script>
+    new Chart(document.getElementById('bar'), {{
+      type:'bar',
+      data:{{
+        labels:['San Isidro','Surco','Miraflores','Callao','Chorrillos'],
+        datasets:[{{data:[12,9,7,8,6],backgroundColor:'#4da3ff'}}]
+      }},
+      options:{{plugins:{{legend:{{display:false}}}}}}
+    }});
+    </script>
+
     </body>
     </html>
     """
 
-
-# ================= LAYOUT BASE =================
-def layout(titulo, contenido, extra_js=""):
-    return f"""
-<!DOCTYPE html>
-<html>
-<head>
-    <title>{titulo}</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-    <style>
-        body {{
-            margin:0; font-family:Arial;
-            background:linear-gradient(180deg,#071a2d,#0b2a44);
-            color:white;
-        }}
-        .nav {{
-            background:#061627;
-            padding:15px 40px;
-            display:flex; justify-content:space-between; align-items:center;
-        }}
-        .brand .x {{ color:#e74c3c; }}
-        .subnav {{
-            background:#0b2238; padding:10px 40px;
-            display:flex; gap:25px;
-        }}
-        .subnav a {{
-            color:#cce6ff; text-decoration:none; font-weight:bold;
-        }}
-        .subnav a:hover {{ color:#4da6ff; }}
-        .logout {{ color:#ff7675; text-decoration:none; font-weight:bold; }}
-        .content {{ padding:40px; }}
-        .grid {{
-            display:grid;
-            grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-            gap:20px;
-        }}
-        .card {{
-            background:#102a43;
-            padding:20px;
-            border-radius:14px;
-            text-align:center;
-        }}
-        .row {{
-            display:grid;
-            grid-template-columns:1fr 1fr;
-            gap:30px;
-            margin-top:30px;
-        }}
-        iframe {{
-            border-radius:10px;
-        }}
-    </style>
-</head>
-
-<body>
-<div class="nav">
-    <div class="brand">SODE<span class="x">X</span>O PERÚ</div>
-    <a class="logout" href="/logout">Cerrar sesión</a>
-</div>
-
-<div class="subnav">
-    <a href="/principal">Principal</a>
-    <a href="/tecnicos">Técnicos</a>
-    <a href="/especialidad">Especialidad</a>
-    <a href="/clientes">Clientes</a>
-    <a href="/condiciones">Condiciones</a>
-</div>
-
-<div class="content">
-    <h1>{titulo}</h1>
-    {contenido}
-</div>
-
-{extra_js}
-</body>
-</html>
-"""
-
-
-# ================= PRINCIPAL =================
-@app.route("/principal")
-def principal():
-    if not session.get("logueado"):
-        return redirect(url_for("login"))
-
-    contenido = """
-    <div class="grid">
-        <div class="card" style="background:#1f3a56;">🚚<h2>6</h2>Vehículos</div>
-        <div class="card" style="background:#264653;">👷<h2>5</h2>Técnicos</div>
-        <div class="card" style="background:#2a9d8f;">🏢<h2>5</h2>Oficinas</div>
-        <div class="card" style="background:#e76f51;">🎫<h2>42</h2>Tickets</div>
-    </div>
-
-    <div class="row">
-        <!-- GRAFICO -->
-        <div class="card">
-            <h3>Tickets por Oficina</h3>
-            <canvas id="barChart"></canvas>
-        </div>
-
-        <!-- MAPA GOOGLE -->
-        <div class="card">
-            <h3>Ruta por Técnico</h3>
-            <select onchange="cambiarRuta(this.value)">
-                <option value="1">Técnico Juan</option>
-                <option value="2">Técnico Carlos</option>
-                <option value="3">Técnico Ana</option>
-                <option value="4">Técnico Luis</option>
-                <option value="5">Técnico Pedro</option>
-            </select>
-
-            <iframe
-                id="mapa"
-                width="100%"
-                height="300"
-                src=""
-                loading="lazy"
-                referrerpolicy="no-referrer-when-downgrade">
-            </iframe>
-        </div>
-    </div>
-    """
-
-    extra_js = """
-    <script>
-        // Gráfico de barras
-        new Chart(document.getElementById('barChart'), {
-            type:'bar',
-            data:{
-                labels:['San Isidro','Surco','Miraflores','Callao','Chorrillos'],
-                datasets:[{
-                    data:[12,9,7,8,6],
-                    backgroundColor:'#4da6ff'
-                }]
-            },
-            options:{ plugins:{legend:{display:false}} }
-        });
-
-        // RUTAS GOOGLE MAPS (UNA POR TECNICO)
-        const rutas = {
-            1: "https://www.google.com/maps/dir/?api=1&waypoints=-12.088906,-77.004256&destination=-12.091313,-77.030346&travelmode=driving",
-            2: "https://www.google.com/maps/dir/?api=1&waypoints=-12.060000,-77.045000&destination=-12.070000,-77.060000&travelmode=driving",
-            3: "https://www.google.com/maps/dir/?api=1&waypoints=-12.050000,-77.030000&destination=-12.040000,-77.020000&travelmode=driving",
-            4: "https://www.google.com/maps/dir/?api=1&waypoints=-12.080000,-77.070000&destination=-12.090000,-77.080000&travelmode=driving",
-            5: "https://www.google.com/maps/dir/?api=1&waypoints=-12.100000,-77.040000&destination=-12.110000,-77.050000&travelmode=driving"
-        };
-
-        function cambiarRuta(v){
-            document.getElementById("mapa").src = rutas[v];
-        }
-
-        // Ruta inicial
-        cambiarRuta(1);
-    </script>
-    """
-
-    return layout("Principal – Rutograma", contenido, extra_js)
-
-
-# ================= OTRAS PÁGINAS (NO TOCADAS) =================
-@app.route("/tecnicos")
-def tecnicos():
-    if not session.get("logueado"):
-        return redirect(url_for("login"))
-    return layout("Técnicos", "<div class='card'>Vista de técnicos</div>")
-
-@app.route("/especialidad")
-def especialidad():
-    if not session.get("logueado"):
-        return redirect(url_for("login"))
-    return layout("Especialidad", "<div class='card'>Vista de especialidades</div>")
-
-@app.route("/clientes")
-def clientes():
-    if not session.get("logueado"):
-        return redirect(url_for("login"))
-    return layout("Clientes", "<div class='card'>Vista de clientes</div>")
-
-@app.route("/condiciones")
-def condiciones():
-    if not session.get("logueado"):
-        return redirect(url_for("login"))
-    return layout("Condiciones", "<div class='card'>Condiciones operativas</div>")
-
-
+# =========================
+# LOGOUT
+# =========================
 @app.route("/logout")
 def logout():
     session.clear()
     return redirect(url_for("login"))
 
-
+# =========================
+# RUN
+# =========================
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=10000)
-
-
