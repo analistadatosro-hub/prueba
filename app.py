@@ -160,7 +160,7 @@ def principal():
 
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
 
-      <div class="card" style="height:260px">
+      <div class="card" style="height:450px">
         <canvas id="barras" style="height:100%"></canvas>
       </div>
 
@@ -225,3 +225,4 @@ def logout():
 # =========================
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=10000)
+
