@@ -180,6 +180,38 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
+
+st.markdown("""
+<style>
+
+/* 🔥 QUITAR ESPACIO SUPERIOR GLOBAL */
+.main .block-container {
+    padding-top: 0.5rem !important;
+    padding-bottom: 1rem !important;
+}
+
+/* 🔥 PEGAR LOGO Y TITULO ARRIBA */
+h1, h2, h3 {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+}
+
+/* 🔥 REDUCIR ESPACIO DESPUÉS DEL LOGO */
+img {
+    margin-bottom: 0.5rem !important;
+}
+
+/* 🔥 QUITAR ESPACIO EXTRA DE STREAMLIT */
+section[data-testid="stSidebar"] + div {
+    padding-top: 0 !important;
+}
+
+</style>
+""", unsafe_allow_html=True)
+
+
+
+
 # =========================
 # SESSION STATE INITIALIZATION
 # =========================
@@ -228,12 +260,10 @@ def reset_app():
 # =========================
 # APP HEADER - LOGO
 if os.path.exists("logo.jpeg"):
-    st.image("logo.jpeg", width=300)
+    st.image("logo.jpeg", width=220)
 else:
-    st.markdown(
-        "<h1 style='color: #262262; font-size: 40px; margin:0; padding:0;'>SODEXO PERÚ</h1>",
-        unsafe_allow_html=True
-    )
+    st.markdown("<h1 style='text-align: center; color: #262262; padding-top: 0px;'>Planificador de Rutas</h1>", unsafe_allow_html=True)
+
 
 
 st.markdown(
@@ -631,6 +661,7 @@ elif st.session_state.stage == "results":
     if c_reset.button("🔄 Nueva Planificación"):
         reset_app()
         st.rerun()
+
 
 
 
