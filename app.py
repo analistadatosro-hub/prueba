@@ -4,11 +4,14 @@ app = Flask(__name__)
 app.secret_key = "sodexo_secret_key"
 
 # =========================
-# LOGIN (NO TOCAR)
+# CREDENCIALES
 # =========================
 USUARIO_VALIDO = "ABEDOYA"
 PASSWORD_VALIDO = "Prueba123"
 
+# =========================
+# LOGIN (NO TOCAR)
+# =========================
 @app.route("/", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
@@ -32,7 +35,7 @@ def login():
     """
 
 # =========================
-# RUTAS GOOGLE MAPS
+# RUTAS GOOGLE MAPS (EMBED)
 # =========================
 RUTAS = {
     "Juan": "https://www.google.com/maps/embed?pb=!1m28!1m12!1m3!1d3901.8764!2d-77.004256!3d-12.088906!4m13!3e0!4m5!1sSan+Isidro!4m5!1sMiraflores!5e0",
@@ -43,7 +46,7 @@ RUTAS = {
 }
 
 # =========================
-# LAYOUT BASE (NO TOCAR)
+# LAYOUT BASE
 # =========================
 def layout(titulo, contenido):
     return f"""
@@ -60,10 +63,12 @@ def layout(titulo, contenido):
       </style>
     </head>
     <body>
+
       <div class="top">
         <b>SODEXO <span style="color:red">X</span> PERÚ</b>
         <a href="/logout" style="float:right;color:red">Cerrar sesión</a>
       </div>
+
       <div class="menu">
         <a href="/principal">Principal</a>
         <a href="/tecnicos">Técnicos</a>
@@ -71,15 +76,17 @@ def layout(titulo, contenido):
         <a href="/clientes">Clientes</a>
         <a href="/condiciones">Condiciones</a>
       </div>
+
       <div class="content">
         {contenido}
       </div>
+
     </body>
     </html>
     """
 
 # =========================
-# PRINCIPAL (ÚNICO AJUSTE)
+# PRINCIPAL (ÚNICA PÁGINA AJUSTADA)
 # =========================
 @app.route("/principal")
 def principal():
@@ -92,21 +99,35 @@ def principal():
     contenido = f"""
     <h2>Principal – Rutograma</h2>
 
-    <div style="display:flex;gap:20px;margin-bottom:20px">
+    <!-- TARJETAS -->
+    <div style="display:flex;gap:20px;margin-bottom:25px">
       <div style="flex:1;background:#1e3a5f;padding:20px;border-radius:12px;text-align:center">🚚<h2>6</h2>Vehículos</div>
       <div style="flex:1;background:#244a4a;padding:20px;border-radius:12px;text-align:center">🧑‍🔧<h2>5</h2>Técnicos</div>
       <div style="flex:1;background:#2c9c8c;padding:20px;border-radius:12px;text-align:center">🏢<h2>5</h2>Oficinas</div>
       <div style="flex:1;background:#e67352;padding:20px;border-radius:12px;text-align:center">🎫<h2>42</h2>Tickets</div>
     </div>
 
+    <!-- BARRAS + MAPA -->
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
-      <canvas id="barras"></canvas>
-      <div>
-        <select onchange="location='?tecnico='+this.value">
-          {''.join([f"<option {'selected' if t==tecnico else ''}>{t}</option>" for t in RUTAS])}
-        </select><br><br>
-        <iframe src="{mapa}" width="100%" height="350" style="border-radius:12px;border:none"></iframe>
+
+      <div style="background:#102a43;padding:15px;border-radius:12px">
+        <canvas id="barras" height="180"></canvas>
       </div>
+
+      <div style="background:#102a43;padding:15px;border-radius:12px">
+        <select onchange="location='?tecnico='+this.value" style="width:100%;margin-bottom:10px">
+          {''.join([f"<option {'selected' if t==tecnico else ''}>{t}</option>" for t in RUTAS])}
+        </select>
+
+        <iframe
+          src="{mapa}"
+          width="100%"
+          height="180"
+          style="border:0;border-radius:10px"
+          loading="lazy">
+        </iframe>
+      </div>
+
     </div>
 
     <script>
@@ -116,7 +137,11 @@ def principal():
         labels:['San Isidro','Surco','Miraflores','Callao','Chorrillos'],
         datasets:[{{data:[12,9,7,8,6],backgroundColor:'#4da3ff'}}]
       }},
-      options:{{plugins:{{legend:{{display:false}}}}}}
+      options:{{
+        plugins:{{legend:{{display:false}}}},
+        responsive:true,
+        maintainAspectRatio:false
+      }}
     }});
     </script>
     """
@@ -124,7 +149,7 @@ def principal():
     return layout("Rutograma", contenido)
 
 # =========================
-# OTRAS PÁGINAS (SIN TOCAR)
+# OTRAS PÁGINAS (SIN CAMBIOS)
 # =========================
 @app.route("/tecnicos")
 def tecnicos():
