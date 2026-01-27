@@ -135,14 +135,52 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-
 def login_page():
-    st.markdown("<h1 style='text-align:center'>SODE<span style='color:red'>X</span>O PERÚ</h1>", unsafe_allow_html=True)
-    st.markdown("<h3 style='text-align:center'>Acceso Rutograma</h3>", unsafe_allow_html=True)
+    st.markdown("""
+        <style>
+        .login-bg {
+            min-height: 100vh;
+            background: linear-gradient(180deg, #071a2f, #0b2a4a);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .login-card {
+            background: #081c34;
+            padding: 40px;
+            border-radius: 16px;
+            width: 360px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            text-align: center;
+        }
+
+        .login-card h1 {
+            color: white;
+            margin-bottom: 5px;
+            letter-spacing: 1px;
+        }
+
+        .login-card h1 span {
+            color: #EF4044;
+        }
+
+        .login-card h3 {
+            color: #9fbad6;
+            font-weight: normal;
+            margin-bottom: 25px;
+        }
+        </style>
+    """, unsafe_allow_html=True)
+
+    st.markdown('<div class="login-bg"><div class="login-card">', unsafe_allow_html=True)
+
+    st.markdown("<h1>SODE<span>X</span>O PERÚ</h1>", unsafe_allow_html=True)
+    st.markdown("<h3>Acceso Rutograma</h3>", unsafe_allow_html=True)
 
     with st.form("login_form"):
-        usuario = st.text_input("Usuario")
-        password = st.text_input("Contraseña", type="password")
+        usuario = st.text_input("Usuario", label_visibility="collapsed")
+        password = st.text_input("Contraseña", type="password", label_visibility="collapsed")
         ingresar = st.form_submit_button("Ingresar")
 
         if ingresar:
@@ -151,6 +189,10 @@ def login_page():
                 st.rerun()
             else:
                 st.error("Usuario o contraseña incorrectos")
+
+    st.markdown('</div></div>', unsafe_allow_html=True)
+
+
 
 
 # =========================
@@ -608,5 +650,6 @@ elif st.session_state.stage == 'results':
     if c_reset.button("🔄 Nueva Planificación"):
         reset_app()
         st.rerun()
+
 
 
