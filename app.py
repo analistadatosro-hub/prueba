@@ -3,7 +3,6 @@ from flask import Flask, request, redirect, url_for, session
 app = Flask(__name__)
 app.secret_key = "sodexo_secreto_prueba"
 
-# Credenciales de prueba
 USUARIO_VALIDO = "ABEDOYA"
 PASSWORD_VALIDA = "Prueba123"
 
@@ -11,97 +10,40 @@ PASSWORD_VALIDA = "Prueba123"
 @app.route("/", methods=["GET", "POST"])
 def login():
     error = ""
-
     if request.method == "POST":
-        usuario = request.form.get("usuario")
-        password = request.form.get("password")
-
-        if usuario == USUARIO_VALIDO and password == PASSWORD_VALIDA:
+        if request.form.get("usuario") == USUARIO_VALIDO and request.form.get("password") == PASSWORD_VALIDA:
             session["logueado"] = True
-            return redirect(url_for("dashboard"))
+            return redirect(url_for("rutograma"))
         else:
             error = "Usuario o contraseña incorrectos"
 
     return f"""
-    <!DOCTYPE html>
-    <html lang="es">
+    <html>
     <head>
-        <meta charset="UTF-8">
         <title>Login | Sodexo Perú</title>
         <style>
             body {{
-                margin: 0;
-                height: 100vh;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                font-family: Arial, sans-serif;
-                background: linear-gradient(180deg, #071a2d, #0b2a44);
-                color: white;
+                height:100vh; display:flex; justify-content:center; align-items:center;
+                background:linear-gradient(180deg,#071a2d,#0b2a44);
+                font-family:Arial; color:white;
             }}
-
-            .login-box {{
-                background: #061627;
-                padding: 40px;
-                border-radius: 14px;
-                width: 320px;
-                box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-                text-align: center;
+            .box {{
+                background:#061627; padding:40px; border-radius:14px;
+                width:320px; text-align:center;
             }}
-
-            h1 {{
-                margin-bottom: 5px;
-                color: #4da6ff;
-            }}
-
-            h3 {{
-                margin-top: 0;
-                margin-bottom: 30px;
-                font-weight: normal;
-                color: #cce6ff;
-            }}
-
-            input {{
-                width: 100%;
-                padding: 12px;
-                margin-bottom: 15px;
-                border-radius: 6px;
-                border: none;
-                font-size: 14px;
-            }}
-
-            button {{
-                width: 100%;
-                padding: 12px;
-                background: #4da6ff;
-                color: white;
-                border: none;
-                border-radius: 6px;
-                font-size: 15px;
-                cursor: pointer;
-            }}
-
-            button:hover {{
-                background: #2e8cff;
-            }}
-
-            .error {{
-                margin-top: 15px;
-                color: #ff7675;
-                font-size: 13px;
-            }}
+            h1 {{ color:#e74c3c; }}
+            input,button {{ width:100%; padding:12px; margin-top:15px; }}
+            button {{ background:#4da6ff; border:none; color:white; }}
+            .error {{ color:#ff7675; margin-top:10px; }}
         </style>
     </head>
     <body>
-        <form method="POST" class="login-box">
-            <h1>SODEXO PERÚ</h1>
-            <h3>Acceso a Dashboard</h3>
-
-            <input type="text" name="usuario" placeholder="Usuario" required>
+        <form method="POST" class="box">
+            <h1>SODEXO ✖</h1>
+            <h3>Acceso Rutograma</h3>
+            <input name="usuario" placeholder="Usuario" required>
             <input type="password" name="password" placeholder="Contraseña" required>
-
-            <button type="submit">Ingresar</button>
-
+            <button>Ingresar</button>
             <div class="error">{error}</div>
         </form>
     </body>
@@ -109,140 +51,90 @@ def login():
     """
 
 
-@app.route("/dashboard")
-def dashboard():
+@app.route("/rutograma")
+def rutograma():
     if not session.get("logueado"):
         return redirect(url_for("login"))
 
     return """
-    <!DOCTYPE html>
-    <html lang="es">
-    <head>
-        <meta charset="UTF-8">
-        <title>Dashboard Tickets | Sodexo Perú</title>
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Rutograma | Sodexo Perú</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
-        <style>
-            body {
-                margin: 0;
-                font-family: Arial, sans-serif;
-                background: linear-gradient(180deg, #071a2d, #0b2a44);
-                color: #ffffff;
-            }
+    <style>
+        body { margin:0; font-family:Arial; background:linear-gradient(180deg,#071a2d,#0b2a44); color:white; }
+        .nav { background:#061627; padding:15px 40px; display:flex; justify-content:space-between; }
+        .brand { color:#e74c3c; font-weight:bold; }
+        .content { padding:40px; }
+        .kpis, .charts { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:20px; }
+        .box { background:#102a43; padding:20px; border-radius:14px; text-align:center; }
+        #map { height:400px; border-radius:14px; margin-top:30px; }
+        select { padding:10px; margin-bottom:20px; }
+    </style>
+</head>
 
-            .navbar {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                padding: 15px 40px;
-                background: #061627;
-            }
+<body>
+    <div class="nav">
+        <div>Rutograma Operativo</div>
+        <div class="brand">SODEXO ✖ PERÚ</div>
+    </div>
 
-            .navbar a {
-                color: #cce6ff;
-                margin-right: 20px;
-                text-decoration: none;
-                font-weight: bold;
-            }
+    <div class="content">
+        <h1>🗺️ Rutograma de Atención</h1>
 
-            .brand {
-                color: #4da6ff;
-                font-weight: bold;
-            }
-
-            .content {
-                padding: 40px;
-            }
-
-            .kpis {
-                display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-                gap: 20px;
-                margin-bottom: 40px;
-            }
-
-            .kpi {
-                background: #102a43;
-                border-radius: 14px;
-                padding: 25px;
-                text-align: center;
-            }
-
-            .charts {
-                display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
-                gap: 30px;
-            }
-
-            .chart-box {
-                background: #102a43;
-                border-radius: 14px;
-                padding: 20px;
-                height: 380px;
-            }
-
-            .chart-box canvas {
-                max-height: 300px !important;
-            }
-        </style>
-    </head>
-
-    <body>
-        <div class="navbar">
-            <div>
-                <a href="#">Inicio</a>
-                <a href="#">Responsable</a>
-                <a href="#">Contratos</a>
-            </div>
-            <div class="brand">SODEXO PERÚ</div>
+        <div class="kpis">
+            <div class="box"><h2>6</h2>Vehículos</div>
+            <div class="box"><h2>8</h2>Técnicos</div>
+            <div class="box"><h2>5</h2>Oficinas</div>
+            <div class="box"><h2>42</h2>Tickets Pendientes</div>
         </div>
 
-        <div class="content">
-            <h1>📊 Dashboard de Atención de Tickets</h1>
-
-            <div class="kpis">
-                <div class="kpi"><h2 style="color:#4da6ff">150</h2>Total</div>
-                <div class="kpi"><h2 style="color:#2ecc71">98</h2>A Tiempo</div>
-                <div class="kpi"><h2 style="color:#f1c40f">32</h2>Fuera de Tiempo</div>
-                <div class="kpi"><h2 style="color:#e74c3c">20</h2>Pendientes</div>
-            </div>
-
-            <div class="charts">
-                <div class="chart-box">
-                    <canvas id="barChart"></canvas>
-                </div>
-                <div class="chart-box">
-                    <canvas id="pieChart"></canvas>
-                </div>
-            </div>
+        <h3 style="margin-top:40px;">📊 Tickets por Oficina</h3>
+        <div class="charts">
+            <div class="box"><canvas id="barChart"></canvas></div>
         </div>
 
-        <script>
-            new Chart(document.getElementById('barChart'), {
-                type: 'bar',
-                data: {
-                    labels: ['San Isidro', 'Miraflores', 'Surco', 'Callao', 'Chiclayo'],
-                    datasets: [{
-                        data: [40, 32, 28, 22, 18],
-                        backgroundColor: '#4da6ff'
-                    }]
-                }
-            });
+        <h3 style="margin-top:40px;">👷 Filtro por Técnico</h3>
+        <select id="tecnico" onchange="cambiarRuta()">
+            <option value="1">Técnico Juan</option>
+            <option value="2">Técnico Carlos</option>
+        </select>
 
-            new Chart(document.getElementById('pieChart'), {
-                type: 'pie',
-                data: {
-                    labels: ['Lima', 'Provincia'],
-                    datasets: [{
-                        data: [65, 35],
-                        backgroundColor: ['#2ecc71', '#f39c12']
-                    }]
-                }
-            });
-        </script>
-    </body>
-    </html>
-    """
+        <div id="map"></div>
+    </div>
+
+<script>
+    new Chart(document.getElementById('barChart'), {
+        type:'bar',
+        data:{
+            labels:['San Isidro','Surco','Miraflores','Callao','Chorrillos'],
+            datasets:[{data:[12,9,7,8,6], backgroundColor:'#4da6ff'}]
+        }
+    });
+
+    var map = L.map('map').setView([-12.0464,-77.0428],12);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+    var rutas = {
+        1: [[-12.05,-77.04],[-12.06,-77.03],[-12.07,-77.02]],
+        2: [[-12.04,-77.05],[-12.03,-77.06],[-12.02,-77.07]]
+    };
+
+    var polyline = L.polyline(rutas[1],{color:'red'}).addTo(map);
+
+    function cambiarRuta(){
+        map.removeLayer(polyline);
+        var t = document.getElementById('tecnico').value;
+        polyline = L.polyline(rutas[t],{color:'red'}).addTo(map);
+    }
+</script>
+</body>
+</html>
+"""
 
 
 @app.route("/logout")
@@ -253,5 +145,4 @@ def logout():
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=10000)
-
 
