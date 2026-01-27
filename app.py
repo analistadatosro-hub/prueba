@@ -7,9 +7,7 @@ USUARIO_VALIDO = "ABEDOYA"
 PASSWORD_VALIDA = "Prueba123"
 
 
-# =========================
-# LOGIN
-# =========================
+# ================= LOGIN =================
 @app.route("/", methods=["GET", "POST"])
 def login():
     error = ""
@@ -54,15 +52,13 @@ def login():
     """
 
 
-# =========================
-# LAYOUT BASE
-# =========================
-def layout(titulo, contenido):
+# ================ LAYOUT BASE =================
+def layout(titulo, contenido, extra_js=""):
     return f"""
 <!DOCTYPE html>
 <html>
 <head>
-    <title>{titulo} | Sodexo Perú</title>
+    <title>{titulo}</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
@@ -73,59 +69,44 @@ def layout(titulo, contenido):
             background:linear-gradient(180deg,#071a2d,#0b2a44);
             color:white;
         }}
-
         .nav {{
             background:#061627;
             padding:15px 40px;
-            display:flex;
-            justify-content:space-between;
-            align-items:center;
+            display:flex; justify-content:space-between; align-items:center;
         }}
-
-        .brand .x {{ color:#e74c3c; font-weight:bold; }}
-
+        .brand .x {{ color:#e74c3c; }}
         .subnav {{
-            background:#0b2238;
-            padding:10px 40px;
-            display:flex;
-            gap:25px;
+            background:#0b2238; padding:10px 40px;
+            display:flex; gap:25px;
         }}
-
         .subnav a {{
-            color:#cce6ff;
-            text-decoration:none;
-            font-weight:bold;
+            color:#cce6ff; text-decoration:none; font-weight:bold;
         }}
-
         .subnav a:hover {{ color:#4da6ff; }}
-
+        .logout {{ color:#ff7675; text-decoration:none; font-weight:bold; }}
         .content {{ padding:40px; }}
-
-        .logout {{
-            color:#ff7675;
-            text-decoration:none;
-            font-weight:bold;
-        }}
-
-        .box {{
-            background:#102a43;
-            padding:20px;
-            border-radius:14px;
-            margin-bottom:20px;
-        }}
-
         .grid {{
             display:grid;
             grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
             gap:20px;
         }}
-
-        #map {{ height:320px; border-radius:10px; }}
+        .card {{
+            background:#102a43;
+            padding:20px;
+            border-radius:14px;
+            text-align:center;
+        }}
+        .row {{
+            display:grid;
+            grid-template-columns:1fr 1fr;
+            gap:30px;
+            margin-top:30px;
+        }}
+        #map {{ height:300px; border-radius:10px; }}
     </style>
 </head>
 
 <body>
-
 <div class="nav">
     <div class="brand">SODE<span class="x">X</span>O PERÚ</div>
     <a class="logout" href="/logout">Cerrar sesión</a>
@@ -144,14 +125,13 @@ def layout(titulo, contenido):
     {contenido}
 </div>
 
+{extra_js}
 </body>
 </html>
 """
 
 
-# =========================
-# PRINCIPAL (RUTOGRAMA)
-# =========================
+# ================= PRINCIPAL =================
 @app.route("/principal")
 def principal():
     if not session.get("logueado"):
@@ -159,30 +139,48 @@ def principal():
 
     contenido = """
     <div class="grid">
-        <div class="box"><h2>6</h2>Vehículos</div>
-        <div class="box"><h2>5</h2>Técnicos</div>
-        <div class="box"><h2>5</h2>Oficinas</div>
-        <div class="box"><h2>42</h2>Tickets</div>
+        <div class="card" style="background:#1f3a56;">🚚<h2>6</h2>Vehículos</div>
+        <div class="card" style="background:#264653;">👷<h2>5</h2>Técnicos</div>
+        <div class="card" style="background:#2a9d8f;">🏢<h2>5</h2>Oficinas</div>
+        <div class="card" style="background:#e76f51;">🎫<h2>42</h2>Tickets</div>
     </div>
 
-    <div class="box">
-        <h3>Rutas Operativas</h3>
-        <select onchange="cambiarRuta(this.value)">
-            <option value="1">Técnico Juan</option>
-            <option value="2">Técnico Carlos</option>
-            <option value="3">Técnico Ana</option>
-            <option value="4">Técnico Luis</option>
-            <option value="5">Técnico Pedro</option>
-        </select>
-        <div id="map"></div>
-    </div>
+    <div class="row">
+        <div class="card">
+            <h3>Tickets por Oficina</h3>
+            <canvas id="barChart"></canvas>
+        </div>
 
+        <div class="card">
+            <h3>Rutas por Técnico</h3>
+            <select onchange="cambiarRuta(this.value)">
+                <option value="1">Técnico Juan</option>
+                <option value="2">Técnico Carlos</option>
+                <option value="3">Técnico Ana</option>
+                <option value="4">Técnico Luis</option>
+                <option value="5">Técnico Pedro</option>
+            </select>
+            <div id="map"></div>
+        </div>
+    </div>
+    """
+
+    extra_js = """
     <script>
+        new Chart(document.getElementById('barChart'), {
+            type:'bar',
+            data:{
+                labels:['San Isidro','Surco','Miraflores','Callao','Chorrillos'],
+                datasets:[{ data:[12,9,7,8,6], backgroundColor:'#4da6ff' }]
+            },
+            options:{ plugins:{legend:{display:false}} }
+        });
+
         var map = L.map('map').setView([-12.0464,-77.0428],14);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
         var rutas = {
-            1:[[-12.045,-77.04],[-12.047,-77.035],[-12.05,-77.03]],
+            1:[[-12.045,-77.04],[-12.047,-77.035]],
             2:[[-12.05,-77.045],[-12.052,-77.05]],
             3:[[-12.04,-77.03],[-12.042,-77.028]],
             4:[[-12.048,-77.06],[-12.049,-77.065]],
@@ -190,7 +188,6 @@ def principal():
         };
 
         var linea = L.polyline(rutas[1],{color:'red'}).addTo(map);
-
         function cambiarRuta(v){
             map.removeLayer(linea);
             linea = L.polyline(rutas[v],{color:'red'}).addTo(map);
@@ -198,12 +195,11 @@ def principal():
         }
     </script>
     """
-    return layout("Principal – Rutograma", contenido)
+
+    return layout("Principal – Rutograma", contenido, extra_js)
 
 
-# =========================
-# TÉCNICOS
-# =========================
+# ================= TÉCNICOS =================
 @app.route("/tecnicos")
 def tecnicos():
     if not session.get("logueado"):
@@ -211,38 +207,17 @@ def tecnicos():
 
     contenido = """
     <div class="grid">
-        <div class="box">Juan – Zona Centro</div>
-        <div class="box">Carlos – Zona Norte</div>
-        <div class="box">Ana – Zona Sur</div>
-        <div class="box">Luis – Callao</div>
-        <div class="box">Pedro – Soporte</div>
+        <div class="card">👷 Juan<br><small>Zona Centro</small></div>
+        <div class="card">👷 Carlos<br><small>Zona Norte</small></div>
+        <div class="card">👷 Ana<br><small>Zona Sur</small></div>
+        <div class="card">👷 Luis<br><small>Callao</small></div>
+        <div class="card">👷 Pedro<br><small>Soporte</small></div>
     </div>
     """
     return layout("Técnicos", contenido)
 
 
-# =========================
-# ESPECIALIDAD
-# =========================
-@app.route("/especialidad")
-def especialidad():
-    if not session.get("logueado"):
-        return redirect(url_for("login"))
-
-    contenido = """
-    <div class="grid">
-        <div class="box">Electricidad – 40%</div>
-        <div class="box">Climatización – 25%</div>
-        <div class="box">Gas – 20%</div>
-        <div class="box">Otros – 15%</div>
-    </div>
-    """
-    return layout("Especialidades", contenido)
-
-
-# =========================
-# CLIENTES
-# =========================
+# ================= CLIENTES =================
 @app.route("/clientes")
 def clientes():
     if not session.get("logueado"):
@@ -250,26 +225,45 @@ def clientes():
 
     contenido = """
     <div class="grid">
-        <div class="box">Cliente A – 12 tickets</div>
-        <div class="box">Cliente B – 9 tickets</div>
-        <div class="box">Cliente C – 7 tickets</div>
+        <div class="card">🏦 BCP</div>
+        <div class="card">🏦 BBVA</div>
+        <div class="card">🏦 Scotiabank</div>
+        <div class="card">🏦 Interbank</div>
+        <div class="card">🏦 Banco de la Nación</div>
     </div>
     """
     return layout("Clientes", contenido)
 
 
-# =========================
-# CONDICIONES
-# =========================
+# ================= ESPECIALIDAD =================
+@app.route("/especialidad")
+def especialidad():
+    if not session.get("logueado"):
+        return redirect(url_for("login"))
+
+    contenido = """
+    <div class="grid">
+        <div class="card">⚡ Electricidad – 40%</div>
+        <div class="card">❄️ Climatización – 25%</div>
+        <div class="card">🔥 Gas – 20%</div>
+        <div class="card">🔧 Otros – 15%</div>
+    </div>
+    """
+    return layout("Especialidad", contenido)
+
+
+# ================= CONDICIONES =================
 @app.route("/condiciones")
 def condiciones():
     if not session.get("logueado"):
         return redirect(url_for("login"))
 
     contenido = """
-    <div class="box">
-        <p>Las rutas se asignan según disponibilidad, SLA y prioridad contractual.
-        Este rutograma es de uso interno y referencial.</p>
+    <div class="card">
+        <p>• SLA máximo de atención: 24 horas</p>
+        <p>• Prioridad alta en oficinas críticas</p>
+        <p>• Rutas sujetas a tráfico y disponibilidad</p>
+        <p>• Información de uso interno Sodexo</p>
     </div>
     """
     return layout("Condiciones Operativas", contenido)
@@ -283,4 +277,3 @@ def logout():
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=10000)
-
