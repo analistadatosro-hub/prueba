@@ -238,37 +238,42 @@ def principal():
 @app.route("/tecnicos")
 def tecnicos():
     return layout("Técnicos", """
-    <h2>Equipo Técnico</h2>
+    <h2>Técnicos Asignados</h2>
     <div class="card">🧑‍🔧 Juan – Electricidad</div>
     <div class="card">🧑‍🔧 Pedro – Climatización</div>
     <div class="card">🧑‍🔧 Luis – Infraestructura</div>
+    <div class="card">🧑‍🔧 Carlos – Redes</div>
+    <div class="card">🧑‍🔧 Miguel – Seguridad</div>
     """)
 
 @app.route("/especialidad")
 def especialidad():
     return layout("Especialidad", """
-    <h2>Especialidades</h2>
+    <h2>Especialidades Técnicas</h2>
     <div class="card">⚡ Electricidad Industrial</div>
-    <div class="card">❄️ HVAC</div>
-    <div class="card">🌐 Redes</div>
+    <div class="card">❄️ Climatización y HVAC</div>
+    <div class="card">🛠️ Mantenimiento General</div>
+    <div class="card">🌐 Redes y Comunicaciones</div>
     """)
 
 @app.route("/clientes")
 def clientes():
     return layout("Clientes", """
-    <h2>Clientes</h2>
+    <h2>Clientes Atendidos</h2>
     <div class="card">🏦 BCP</div>
     <div class="card">🏦 BBVA</div>
     <div class="card">🏦 Interbank</div>
+    <div class="card">🏦 Scotiabank</div>
     """)
 
 @app.route("/condiciones")
 def condiciones():
     return layout("Condiciones", """
-    <h2>Condiciones Operativas</h2>
-    <div class="card">⏱️ SLA 24h</div>
-    <div class="card">🚨 Emergencias 4h</div>
-    <div class="card">📍 Cobertura Lima</div>
+    <h2>Condiciones de Atención</h2>
+    <div class="card">⏱️ SLA estándar: 24 horas</div>
+    <div class="card">🚨 Atención crítica: 4 horas</div>
+    <div class="card">📍 Cobertura Lima y provincias</div>
+    <div class="card">📑 Registro obligatorio de cierre</div>
     """)
 
 @app.route("/logout")
@@ -278,6 +283,7 @@ def logout():
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=10000)
+
 
 
 
