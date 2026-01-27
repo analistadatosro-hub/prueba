@@ -4,7 +4,7 @@ app = Flask(__name__)
 app.secret_key = "sodexo_secret_key"
 
 # =========================
-# LOGIN (NO TOCAR)
+# LOGIN (NO TOCAR LOGICA)
 # =========================
 USUARIO_VALIDO = "ABEDOYA"
 PASSWORD_VALIDO = "Prueba123"
@@ -21,7 +21,7 @@ def login():
     return """
     <html>
     <body style="background:#081c34;color:white;font-family:Arial;text-align:center;padding-top:120px">
-      <h1>SODEXO <span style="color:red">X</span> PERÚ</h1>
+      <h1>SODE<span style="color:red">X</span>O PERÚ</h1>
       <form method="post">
         <input name="usuario" placeholder="Usuario"><br><br>
         <input type="password" name="password" placeholder="Contraseña"><br><br>
@@ -32,7 +32,7 @@ def login():
     """
 
 # =========================
-# MAPAS GOOGLE (EMBED VÁLIDO)
+# MAPAS GOOGLE (EMBED)
 # =========================
 RUTAS = {
     "Juan": "https://www.google.com/maps?q=San+Isidro+Lima&output=embed",
@@ -63,7 +63,7 @@ def layout(titulo, contenido):
     <body>
 
       <div class="top">
-        <b>SODEXO <span style="color:red">X</span> PERÚ</b>
+        <b>SODE<span style="color:red">X</span>O PERÚ</b>
         <a href="/logout" style="float:right;color:red">Cerrar sesión</a>
       </div>
 
@@ -84,7 +84,7 @@ def layout(titulo, contenido):
     """
 
 # =========================
-# PRINCIPAL (SOLO MAPA ARREGLADO)
+# PRINCIPAL (AJUSTE VISUAL MAPA)
 # =========================
 @app.route("/principal")
 def principal():
@@ -107,7 +107,7 @@ def principal():
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
 
       <div class="card">
-        <canvas id="barras" height="180"></canvas>
+        <canvas id="barras" height="200"></canvas>
       </div>
 
       <div class="card">
@@ -115,7 +115,7 @@ def principal():
           {''.join([f"<option {'selected' if t==tecnico else ''}>{t}</option>" for t in RUTAS])}
         </select>
 
-        <iframe src="{mapa}" width="100%" height="180" style="border:0;border-radius:10px"></iframe>
+        <iframe src="{mapa}" width="100%" height="200" style="border:0;border-radius:10px"></iframe>
       </div>
 
     </div>
@@ -135,7 +135,7 @@ def principal():
     return layout("Rutograma", contenido)
 
 # =========================
-# RESTO DE PÁGINAS (CONTENIDO CREATIVO)
+# RESTO DE PÁGINAS (SIN TOCAR)
 # =========================
 @app.route("/tecnicos")
 def tecnicos():
