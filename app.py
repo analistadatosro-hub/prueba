@@ -59,6 +59,24 @@ def login_page():
 
 
 # =========================
+# FORZAR MODO CLARO (MINIMO Y SEGURO)
+# =========================
+st.markdown("""
+<style>
+html, body, .stApp {
+    background-color: #F4F6F8 !important;
+    color: #262262 !important;
+}
+
+* {
+    color-scheme: light !important;
+}
+</style>
+""", unsafe_allow_html=True)
+
+
+
+# =========================
 # LOGIN CHECK
 # =========================
 if not st.session_state.logged_in:
@@ -653,6 +671,7 @@ elif st.session_state.stage == "results":
     if c_reset.button("🔄 Nueva Planificación"):
         reset_app()
         st.rerun()
+
 
 
 
