@@ -19,6 +19,13 @@ st.set_page_config(page_title="Gestión de Rutas - Sodexo", layout="wide", page_
 USUARIO_VALIDO = "ABEDOYA"
 PASSWORD_VALIDA = "Prueba123"
 
+# =========================
+# SESSION STATE LOGIN INIT  ✅ FIX
+# =========================
+if "logged_in" not in st.session_state:
+    st.session_state.logged_in = False
+
+
 def login_page():
     st.markdown("<br><br>", unsafe_allow_html=True)
 
@@ -653,6 +660,7 @@ elif st.session_state.stage == "results":
     if c_reset.button("🔄 Nueva Planificación"):
         reset_app()
         st.rerun()
+
 
 
 
