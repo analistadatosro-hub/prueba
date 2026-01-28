@@ -1,4 +1,3 @@
-
 import streamlit as st
 import pandas as pd
 import folium
@@ -20,13 +19,11 @@ st.set_page_config(page_title="Gestión de Rutas - Sodexo", layout="wide", page_
 USUARIO_VALIDO = "ABEDOYA"
 PASSWORD_VALIDA = "Prueba123"
 
-# ✅ FIX: inicializar session_state antes de usarlo
 if "logged_in" not in st.session_state:
     st.session_state.logged_in = False
 
-
 def login_page():
-    st.markdown("<br><br>", unsafe_allow_html=True)
+    st.markdown("<br><br><br>", unsafe_allow_html=True)
 
     col1, col2, col3 = st.columns([1, 1.2, 1])
 
@@ -39,15 +36,12 @@ def login_page():
             text-align:center;
             box-shadow:0 20px 40px rgba(0,0,0,.35);
         ">
-        """, unsafe_allow_html=True)
-
-        # ✅ FIX: tú tienes logo.jpeg (no logo.jpg)
-        st.image("logo.jpeg", width=220)
-
-        st.markdown("""
-            <h3 style="color:#c7d3e3;font-weight:normal">
+            <h1 style="color:white;margin-bottom:5px">
+                SODE<span style="color:#EF4044">X</span>O PERÚ
+            </h1>
+            <p style="color:#c7d3e3;margin-top:0">
                 Acceso Rutograma
-            </h3>
+            </p>
         </div>
         """, unsafe_allow_html=True)
 
@@ -70,6 +64,10 @@ def login_page():
 if not st.session_state.logged_in:
     login_page()
     st.stop()
+
+# =========================
+# CUSTOM CSS (SODEXO BRANDING) - SOLO DESPUÉS DEL LOGIN
+# =========================
 
 # =========================
 # CUSTOM CSS (SODEXO BRANDING) - SOLO DESPUÉS DEL LOGIN
@@ -655,3 +653,9 @@ elif st.session_state.stage == "results":
     if c_reset.button("🔄 Nueva Planificación"):
         reset_app()
         st.rerun()
+
+
+
+
+
+
