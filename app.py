@@ -36,9 +36,18 @@ def login_page():
             text-align:center;
             box-shadow:0 20px 40px rgba(0,0,0,.35);
         ">
-            <h1 style="color:white;margin-bottom:5px">
-                SODE<span style="color:#EF4044">X</span>O PERÚ
+            <h1 style="
+                color:white;
+                margin-bottom:5px;
+                letter-spacing:4px;
+            ">
+                SODE<span style="color:#EF4044;letter-spacing:0">X</span>O PERÚ
             </h1>
+
+
+
+
+            
             <p style="color:#c7d3e3;margin-top:0">
                 Acceso Rutograma
             </p>
@@ -653,6 +662,7 @@ elif st.session_state.stage == "results":
     if c_reset.button("🔄 Nueva Planificación"):
         reset_app()
         st.rerun()
+
 
 
 
