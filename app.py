@@ -19,40 +19,31 @@ st.set_page_config(page_title="Gestión de Rutas - Sodexo", layout="wide", page_
 USUARIO_VALIDO = "ABEDOYA"
 PASSWORD_VALIDA = "Prueba123"
 
-if "logged_in" not in st.session_state:
-    st.session_state.logged_in = False
 def login_page():
-    st.markdown("<br><br><br>", unsafe_allow_html=True)
+    st.markdown("<br><br>", unsafe_allow_html=True)
 
     col1, col2, col3 = st.columns([1, 1.2, 1])
 
     with col2:
-        st.markdown(
-            """
-            <div style="
-                background:#081c34;
-                padding:40px;
-                border-radius:16px;
-                text-align:center;
-                box-shadow:0 20px 40px rgba(0,0,0,.35);
-            ">
-                <h1 style="
-                    color:white;
-                    margin-bottom:5px;
-                ">
-                    SODEXO PERÚ
-                </h1>
+        st.markdown("""
+        <div style="
+            background:#081c34;
+            padding:40px;
+            border-radius:16px;
+            text-align:center;
+            box-shadow:0 20px 40px rgba(0,0,0,.35);
+        ">
+        """, unsafe_allow_html=True)
 
-                <p style="
-                    color:white;
-                    margin-top:0;
-                ">
-                    Acceso Rutograma
-                </p>
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
+        # 👉 LOGO
+        st.image("logo.jpg", width=220)
+
+        st.markdown("""
+            <h3 style="color:#c7d3e3;font-weight:normal">
+                Acceso Rutograma
+            </h3>
+        </div>
+        """, unsafe_allow_html=True)
 
         with st.form("login_form"):
             usuario = st.text_input("Usuario")
@@ -662,6 +653,7 @@ elif st.session_state.stage == "results":
     if c_reset.button("🔄 Nueva Planificación"):
         reset_app()
         st.rerun()
+
 
 
 
