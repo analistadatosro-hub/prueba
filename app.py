@@ -21,7 +21,6 @@ PASSWORD_VALIDA = "Prueba123"
 
 if "logged_in" not in st.session_state:
     st.session_state.logged_in = False
-
 def login_page():
     st.markdown("<br><br><br>", unsafe_allow_html=True)
 
@@ -40,9 +39,8 @@ def login_page():
                 <h1 style="
                     color:white;
                     margin-bottom:5px;
-                    letter-spacing:4px;
                 ">
-                    SODE<span style="color:#EF4044;letter-spacing:0">X</span>O PERÚ
+                    SODEXO PERÚ
                 </h1>
 
                 <p style="
@@ -664,6 +662,7 @@ elif st.session_state.stage == "results":
     if c_reset.button("🔄 Nueva Planificación"):
         reset_app()
         st.rerun()
+
 
 
 
