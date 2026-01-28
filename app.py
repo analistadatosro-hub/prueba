@@ -1,3 +1,4 @@
+
 import streamlit as st
 import pandas as pd
 import folium
@@ -19,9 +20,7 @@ st.set_page_config(page_title="Gestión de Rutas - Sodexo", layout="wide", page_
 USUARIO_VALIDO = "ABEDOYA"
 PASSWORD_VALIDA = "Prueba123"
 
-# =========================
-# SESSION STATE LOGIN INIT  ✅ FIX
-# =========================
+# ✅ FIX: inicializar session_state antes de usarlo
 if "logged_in" not in st.session_state:
     st.session_state.logged_in = False
 
@@ -42,8 +41,8 @@ def login_page():
         ">
         """, unsafe_allow_html=True)
 
-        # 👉 LOGO
-        st.image("logo.jpg", width=220)
+        # ✅ FIX: tú tienes logo.jpeg (no logo.jpg)
+        st.image("logo.jpeg", width=220)
 
         st.markdown("""
             <h3 style="color:#c7d3e3;font-weight:normal">
@@ -71,10 +70,6 @@ def login_page():
 if not st.session_state.logged_in:
     login_page()
     st.stop()
-
-# =========================
-# CUSTOM CSS (SODEXO BRANDING) - SOLO DESPUÉS DEL LOGIN
-# =========================
 
 # =========================
 # CUSTOM CSS (SODEXO BRANDING) - SOLO DESPUÉS DEL LOGIN
@@ -660,15 +655,3 @@ elif st.session_state.stage == "results":
     if c_reset.button("🔄 Nueva Planificación"):
         reset_app()
         st.rerun()
-
-
-
-
-
-
-
-
-
-
-
-
