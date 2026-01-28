@@ -27,34 +27,34 @@ def login_page():
 
     col1, col2, col3 = st.columns([1, 1.2, 1])
 
-        with col2:
-            st.markdown(
-                """
-                <div style="
-                    background:#081c34;
-                    padding:40px;
-                    border-radius:16px;
-                    text-align:center;
-                    box-shadow:0 20px 40px rgba(0,0,0,.35);
+    with col2:
+        st.markdown(
+            """
+            <div style="
+                background:#081c34;
+                padding:40px;
+                border-radius:16px;
+                text-align:center;
+                box-shadow:0 20px 40px rgba(0,0,0,.35);
+            ">
+                <h1 style="
+                    color:white;
+                    margin-bottom:5px;
+                    letter-spacing:4px;
                 ">
-                    <h1 style="
-                        color:white;
-                        margin-bottom:5px;
-                        letter-spacing:normal;
-                    ">
-                        SODEXO PERÚ
-                    </h1>
-        
-                    <p style="
-                        color:white;
-                        margin-top:0;
-                    ">
-                        Acceso Rutograma
-                    </p>
-                </div>
-                """,
-                unsafe_allow_html=True
-            )
+                    SODE<span style="color:#EF4044;letter-spacing:0">X</span>O PERÚ
+                </h1>
+
+                <p style="
+                    color:white;
+                    margin-top:0;
+                ">
+                    Acceso Rutograma
+                </p>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
 
         with st.form("login_form"):
             usuario = st.text_input("Usuario")
@@ -664,6 +664,7 @@ elif st.session_state.stage == "results":
     if c_reset.button("🔄 Nueva Planificación"):
         reset_app()
         st.rerun()
+
 
 
 
